@@ -1,0 +1,2 @@
+serviceClass: rahul.feedindia.client.GreetingService
+path: DB755215FDFDE3E0B640EF65F838DEE9.gwt.rpc
