@@ -10,10 +10,19 @@
     <servlet-name>RegisterServlet</servlet-name>
     <servlet-class>rahul.feedindia.RegisterServlet</servlet-class>
   </servlet>
+  <servlet>  
+    <servlet-name>LoginServlet</servlet-name>
+    <servlet-class>rahul.feedindia.LoginServlet</servlet-class>
+  </servlet>
   
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>
     <url-pattern>/feedindia/register</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/feedindia/login</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

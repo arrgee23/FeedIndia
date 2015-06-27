@@ -37,7 +37,7 @@ public class RegisterServlet extends HttpServlet {
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
-		 PrintWriter out = resp.getWriter();
+		PrintWriter out = resp.getWriter();
 		
 		try {
 			Key ukey = KeyFactory.createKey("User", email);
