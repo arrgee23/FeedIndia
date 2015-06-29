@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
@@ -22,17 +21,17 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 //TODO set method to doPost
 //TODO delete throwsIOException
 public class RegisterServlet extends HttpServlet {
-	
+	private static final long serialVersionUID = 4527085618846172530L;
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
-		String name = checkNull(req.getParameter("fullName"));
-		String email = checkNull(req.getParameter("email"));
-		String pwd = checkNull(req.getParameter("hashedPassword"));
-		String city = checkNull(req.getParameter("city"));
-		String state = checkNull(req.getParameter("state"));
-		String zipcode = checkNull(req.getParameter("zipcode"));
-		String address = checkNull(req.getParameter("address"));
-		String phone = checkNull(req.getParameter("phone"));
-		String userType = checkNull(req.getParameter("userType"));
+		String name = checkNull(escapeHtml(req.getParameter("fullName")));
+		String email = checkNull(escapeHtml(req.getParameter("email")));
+		String pwd = checkNull(escapeHtml(req.getParameter("hashedPassword")));
+		String city = checkNull(escapeHtml(req.getParameter("city")));
+		String state = checkNull(escapeHtml(req.getParameter("state")));
+		String zipcode = checkNull(escapeHtml(req.getParameter("zipcode")));
+		String address = checkNull(escapeHtml(req.getParameter("address")));
+		String phone = checkNull(escapeHtml(req.getParameter("phone")));
+		String userType = checkNull((req.getParameter("userType")));
 		
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

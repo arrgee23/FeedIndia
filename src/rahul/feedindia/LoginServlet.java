@@ -3,13 +3,12 @@ package rahul.feedindia;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.collections.MapIterator;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -21,60 +20,146 @@ import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 public class LoginServlet extends HttpServlet {
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+	private static final long serialVersionUID = -5728549237300194024L;
+	private final int SESSION_TIMEOUT = 30;
+
+	public void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
 		String email = checkNull(escapeHtml(req.getParameter("email")));
 		String pwd = checkNull(escapeHtml(req.getParameter("hashedPassword")));
+
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
 		
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		
 		PrintWriter out = resp.getWriter();
+
+		// Create a session object if it is already not created.
+		HttpSession session = req.getSession(true);
 		
-		Key ukey = KeyFactory.createKey("User", email);
+		
+		// user key is pushed onto the session
+		// check to see if user key is there or the user is logged in
+		Key ukey;
+		JSONObject obj = null;
+		if (((Key) session.getAttribute("key")) != null) {
+			ukey = (Key) session.getAttribute("key");
+			//out.println("From Session");
+		} 
+		// The user is logging in
+		else {
+			//out.println("First time login");
+			ukey = KeyFactory.createKey("User", email); // creates key from his email	
+		}
+		
+		Entity user;
+		try {
+			user = datastore.get(ukey);
+			String pass = (String) user.getProperty("hashedPassword");
+			if(pass.equals(pwd)){ // password match valid login
+				obj = encodeUserObject(datastore,true,user);
+				
+				// put key in session
+				session.setAttribute("key", ukey);
+				session.setMaxInactiveInterval(SESSION_TIMEOUT); // set timeout
+			}
+			else{ // wrong password
+				obj = encodeUserObject(datastore,false,user);
+			}
+			
+		} catch (EntityNotFoundException e) { // user doesnt exist
+			obj = encodeUserObject(datastore,false,null);
+		}
+		out.print(obj);
+	}
+	
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		String email = checkNull(escapeHtml(req.getParameter("email")));
+		String pwd = checkNull(escapeHtml(req.getParameter("hashedPassword")));
+
+		DatastoreService datastore = DatastoreServiceFactory
+				.getDatastoreService();
+		
+		
+		PrintWriter out = resp.getWriter();
+
+		// Create a session object if it is already not created.
+		HttpSession session = req.getSession(true);
+		
+		
+		// user key is pushed onto the session
+		// check to see if user key is there or the user is logged in
+		Key ukey;
+		JSONObject obj = null;
+		if (((Key) session.getAttribute("key")) != null) {
+			ukey = (Key) session.getAttribute("key");
+			//out.println("From Session");
+		} 
+		// The user is logging in
+		else {
+			//out.println("First time login");
+			ukey = KeyFactory.createKey("User", email); // creates key from his email	
+		}
+		
+		Entity user;
+		try {
+			user = datastore.get(ukey);
+			String pass = (String) user.getProperty("hashedPassword");
+			if(pass.equals(pwd)){ // password match valid login
+				obj = encodeUserObject(datastore,true,user);
+				
+				// put key in session
+				session.setAttribute("key", ukey);
+				session.setMaxInactiveInterval(SESSION_TIMEOUT); // set timeout
+			}
+			else{ // wrong password
+				obj = encodeUserObject(datastore,false,user);
+			}
+			
+		} catch (EntityNotFoundException e) { // user doesnt exist
+			obj = encodeUserObject(datastore,false,null);
+		}
+		out.print(obj);
+	}
+	
+	
+	private JSONObject encodeUserObject(DatastoreService datastore,boolean isSuccesfulLogin,Entity user){
 		JSONObject obj = new JSONObject();
 		try {
-			 Entity user = datastore.get(ukey);
-			 String pass = (String) user.getProperty("hashedPassword");
-			
-			 if(pass.equals(pwd)){
-				 
-				 obj.put("success", true);
-				 obj.put("key", KeyFactory.keyToString(ukey));
-				 
-				 JSONObject usr = new JSONObject();
-				 usr.put("fullName",(String)user.getProperty("fullName"));
-				 usr.put("email",(String)user.getKey().getName());
-				 usr.put("address",(String)user.getProperty("address"));
-				 usr.put("city",(String)user.getProperty("city"));
-				 usr.put("hashedPassword",pass);
-				 usr.put("isDonor",(boolean)user.getProperty("isDonor"));
-				 usr.put("isVolunteer",(boolean)user.getProperty("isVolunteer"));
-				 usr.put("phone",(String)user.getProperty("phone"));
-				 usr.put("registeredOn",(Date)user.getProperty("registeredOn"));
-				 usr.put("state",(String)user.getProperty("state"));
-				 usr.put("zipcode",(String)user.getProperty("zipcode"));
-				 
-				 obj.put("user",user);
-				 
-			 }else{
+			// TODO error msg
+			if (isSuccesfulLogin) {
+
+				obj.put("success", true);
+
+				JSONObject usr = new JSONObject();
+				usr.put("fullName", (String) user.getProperty("fullName"));
+				usr.put("email", (String) user.getKey().getName());
+				usr.put("address", (String) user.getProperty("address"));
+				usr.put("city", (String) user.getProperty("city"));
+				//usr.put("hashedPassword", pass);
+				usr.put("isDonor", (boolean) user.getProperty("isDonor"));
+				usr.put("isVolunteer",
+						(boolean) user.getProperty("isVolunteer"));
+				usr.put("phone", (String) user.getProperty("phone"));
+				usr.put("registeredOn",
+						(Date) user.getProperty("registeredOn"));
+				usr.put("state", (String) user.getProperty("state"));
+				usr.put("zipcode", (String) user.getProperty("zipcode"));
+
+				obj.put("user", usr);
+
+			} else {
 				obj.put("success", false);
-				obj.put("key", KeyFactory.keyToString(ukey));
-				obj.put("user","");
+				//obj.put("key", KeyFactory.keyToString(ukey));
+				obj.put("user", "");
 			}
-			 out.print(obj);
-			 
-		} catch (EntityNotFoundException e) {
-			
-			try {
-				obj.put("success", false);
-				obj.put("key", KeyFactory.keyToString(ukey));
-				obj.put("user","");
-				out.print(obj);
-			} catch (JSONException e1) {
-				e1.printStackTrace();
-			}
-			
-		}catch(JSONException e2){
-			e2.printStackTrace(out);
+			//out.println(obj);
+
+		}catch (JSONException e2) {
+			e2.printStackTrace();
 		}
+		return obj;
 	}
 	
 	private String escapeHtml(String html) {
@@ -84,6 +169,7 @@ public class LoginServlet extends HttpServlet {
 		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
 				.replaceAll(">", "&gt;");
 	}
+
 	private String checkNull(String s) {
 		if (s == null) {
 			return "";

@@ -14,6 +14,14 @@
     <servlet-name>LoginServlet</servlet-name>
     <servlet-class>rahul.feedindia.LoginServlet</servlet-class>
   </servlet>
+  <servlet>  
+    <servlet-name>LogoutServlet</servlet-name>
+    <servlet-class>rahul.feedindia.LogoutServlet</servlet-class>
+  </servlet>
+  <servlet>  
+    <servlet-name>DonateServlet</servlet-name>
+    <servlet-class>rahul.feedindia.DonateServlet</servlet-class>
+  </servlet>
   
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>
@@ -23,6 +31,16 @@
   <servlet-mapping>
     <servlet-name>LoginServlet</servlet-name>
     <url-pattern>/feedindia/login</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>LogoutServlet</servlet-name>
+    <url-pattern>/feedindia/logout</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>DonateServlet</servlet-name>
+    <url-pattern>/feedindia/donate</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
