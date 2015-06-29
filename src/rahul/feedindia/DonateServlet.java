@@ -2,6 +2,7 @@ package rahul.feedindia;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,17 +35,33 @@ public class DonateServlet extends HttpServlet {
 		JSONObject obj = new JSONObject();
 		if (((Key) session.getAttribute("key")) != null) {
 			ukey = (Key) session.getAttribute("key");
-			try {
-				DatastoreService datastore = DatastoreServiceFactory
-						.getDatastoreService();
-				Entity user = datastore.get(ukey);
-				Entity donation = new Entity("Donation");
-				donation.setProperty("donatedBy",ukey);
-				
-			} 
-			catch (EntityNotFoundException e) {
-				e.printStackTrace();
-			}
+			
+			DatastoreService datastore = DatastoreServiceFactory
+					.getDatastoreService();
+			//Entity user = datastore.get(ukey);
+			
+			Entity donation = new Entity("Donation");
+			// type of donation argument
+			String foodType = checkNull(escapeHtml(req.getParameter("foodType")));
+			int foodQuantity = Integer.parseInt(checkNull(escapeHtml(req.getParameter("foodQuantity"))));
+			int money = Integer.parseInt(checkNull(escapeHtml(req.getParameter("money"))));
+			donation.setProperty("foodType",foodType );
+			donation.setProperty("foodQuantity",foodQuantity);
+			donation.setProperty("money",money);
+			
+			// make donation for the user that is logged in
+			donation.setProperty("donatedBy",ukey);
+			Date donatedOn = new Date();
+			donation.setProperty("donatedOn",donatedOn);
+			
+			// the volunteer who will collect the donation
+			Key volunteer = null;
+			donation.setProperty("handledBy",volunteer);
+			Date responsibiltyTakenOn = null; // the day volunteer accepts the task of collectinng the donation
+			donation.setProperty("responsibiltyTakenOn",responsibiltyTakenOn);
+			donation.setProperty("isHandled",false);
+			Date handledOn = null;
+			donation.setProperty("handledOn",handledOn);
 		}
 		// The user has not logged in
 		else {
@@ -57,6 +74,21 @@ public class DonateServlet extends HttpServlet {
 			}
 
 		}
+	}
+	
+	private String escapeHtml(String html) {
+		if (html == null) {
+			return null;
+		}
+		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;");
+	}
+
+	private String checkNull(String s) {
+		if (s == null) {
+			return "";
+		}
+		return s;
 	}
 
 }
