@@ -22,6 +22,19 @@
     <servlet-name>DonateServlet</servlet-name>
     <servlet-class>rahul.feedindia.DonateServlet</servlet-class>
   </servlet>
+  <servlet>  
+    <servlet-name>RequestServlet</servlet-name>
+    <servlet-class>rahul.feedindia.RequestServlet</servlet-class>
+  </servlet>
+  
+  <servlet>  
+    <servlet-name>VolunteerViewServlet</servlet-name>
+    <servlet-class>rahul.feedindia.VolunteerViewServlet</servlet-class>
+  </servlet>
+  
+  
+  
+  
   
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>
@@ -41,6 +54,16 @@
   <servlet-mapping>
     <servlet-name>DonateServlet</servlet-name>
     <url-pattern>/feedindia/donate</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>RequestServlet</servlet-name>
+    <url-pattern>/feedindia/request</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>VolunteerViewServlet</servlet-name>
+    <url-pattern>/feedindia/volunteer</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

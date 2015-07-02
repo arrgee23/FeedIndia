@@ -11,9 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 import com.google.appengine.api.datastore.Entity;
@@ -62,18 +60,25 @@ public class DonateServlet extends HttpServlet {
 			donation.setProperty("isHandled",false);
 			Date handledOn = null;
 			donation.setProperty("handledOn",handledOn);
+			datastore.put(donation);
+			try {
+				obj.put("success",true);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 		// The user has not logged in
 		else {
 			try {
 				// TODO error msg
 				obj.put("success", false);
-				obj.put("user", "");
+				
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 
 		}
+		out.print(obj);
 	}
 	
 	private String escapeHtml(String html) {

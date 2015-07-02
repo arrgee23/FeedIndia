@@ -33,6 +33,20 @@ public class FieldVerifier {
 	 * @param name the name to validate
 	 * @return true if valid, false if invalid
 	 */
+	public static String escapeHtml(String html) {
+		if (html == null) {
+			return null;
+		}
+		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;");
+	}
+
+	public static String checkNull(String s) {
+		if (s == null) {
+			return "";
+		}
+		return s;
+	}
 	public static boolean isValidName(String name) {
 		if (name == null) {
 			return false;
