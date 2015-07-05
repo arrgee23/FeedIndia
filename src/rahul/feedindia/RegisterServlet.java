@@ -3,6 +3,7 @@ package rahul.feedindia;
 import java.io.IOException;
 
 import com.google.appengine.api.datastore.Key;
+
 import java.io.PrintWriter;
 import java.util.Date;
 
@@ -10,11 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import rahul.feedindia.shared.Strings;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
@@ -23,6 +27,8 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 4527085618846172530L;
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+		resp.setContentType("application/json");
+		
 		String name = checkNull(escapeHtml(req.getParameter("fullName")));
 		String email = checkNull(escapeHtml(req.getParameter("email")));
 		String pwd = checkNull(escapeHtml(req.getParameter("hashedPassword")));
@@ -37,49 +43,65 @@ public class RegisterServlet extends HttpServlet {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
 		PrintWriter out = resp.getWriter();
-		
+		Key ukey = KeyFactory.createKey("User", email);
+		Date currdate = new Date();
 		try {
-			Key ukey = KeyFactory.createKey("User", email);
+			
 			datastore.get(ukey);
 			//TODO send proper response
+			
 			JSONObject obj = new JSONObject();
-			obj.put("success", false);
-			obj.put("key", KeyFactory.keyToString(ukey));
-			obj.put("user","");
-			out.println(obj);
+			obj.put(Strings.SUCCESS, false);
+			obj.put(Strings.MESSAGE, Strings.USER_EXISTS);
+			obj.put(Strings.USER,new JSONObject());
+			
+			out.print(obj);
+			
 			//datastore.get
 		} 
 		catch (JSONException e3){
 			e3.printStackTrace();
 		}
-		catch (Exception e) {
+		catch (Exception e) { // entity not found so add user
 			// add user
-			Entity user = new Entity("User",email); // email is the id of user
-			user.setProperty("fullName", name);
-			user.setProperty("hashedPassword", pwd);
-			user.setProperty("city", city);
-			user.setProperty("zipcode", zipcode);
-			user.setProperty("state", state);
-			user.setProperty("address",address);
-			user.setProperty("phone", phone);
-			Date currdate = new Date();
-			user.setProperty("registeredOn",currdate );
+			Transaction txn = datastore.beginTransaction();
+			try {
+				datastore.get(ukey); // object already exists
+				txn.rollback();
+				
+			} catch (EntityNotFoundException e2) { // now save the entity
+				
+				Entity user = new Entity("User",email); // email is the id of user
+				user.setProperty("fullName", name);
+				user.setProperty("hashedPassword", pwd);
+				user.setProperty("city", city);
+				user.setProperty("zipcode", zipcode);
+				user.setProperty("state", state);
+				user.setProperty("address",address);
+				user.setProperty("phone", phone);
+				user.setProperty("registeredOn",currdate );
 
-			if(userType.equals("donor")){
-				user.setProperty("isDonor", true);
-				user.setProperty("isVolunteer", false);
-			}else{ // its a volunteer
-				user.setProperty("isDonor", false);
-				user.setProperty("isVolunteer", true);
+				if(userType.equals("donor")){
+					user.setProperty("isDonor", true);
+					user.setProperty("isVolunteer", false);
+				}else{ // its a volunteer
+					user.setProperty("isDonor", false);
+					user.setProperty("isVolunteer", true);
+				}
+				datastore.put(user);
+				txn.commit();
+			} finally{
+				if(txn.isActive())
+					txn.rollback();
 			}
-			Key k = datastore.put(user);
+			
 			//TODO send proper response and delete print statement
 			
 			
 				JSONObject obj = new JSONObject();
 				try {
-					obj.put("success", true);
-					obj.put("key", KeyFactory.keyToString(k));
+					obj.put(Strings.SUCCESS, true);
+					obj.put(Strings.MESSAGE, Strings.SUCCESS);
 					
 					JSONObject usr = new JSONObject();
 					usr.put("fullName", name);
@@ -111,63 +133,81 @@ public class RegisterServlet extends HttpServlet {
 	}
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException{
-		String name = checkNull(req.getParameter("fullName"));
-		String email = checkNull(req.getParameter("email"));
-		String pwd = checkNull(req.getParameter("hashedPassword"));
-		String city = checkNull(req.getParameter("city"));
-		String state = checkNull(req.getParameter("state"));
-		String zipcode = checkNull(req.getParameter("zipcode"));
-		String address = checkNull(req.getParameter("address"));
-		String phone = checkNull(req.getParameter("phone"));
-		String userType = checkNull(req.getParameter("userType"));
+		resp.setContentType("application/json");
+		
+		String name = checkNull(escapeHtml(req.getParameter("fullName")));
+		String email = checkNull(escapeHtml(req.getParameter("email")));
+		String pwd = checkNull(escapeHtml(req.getParameter("hashedPassword")));
+		String city = checkNull(escapeHtml(req.getParameter("city")));
+		String state = checkNull(escapeHtml(req.getParameter("state")));
+		String zipcode = checkNull(escapeHtml(req.getParameter("zipcode")));
+		String address = checkNull(escapeHtml(req.getParameter("address")));
+		String phone = checkNull(escapeHtml(req.getParameter("phone")));
+		String userType = checkNull((req.getParameter("userType")));
 		
 		
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		
-		 PrintWriter out = resp.getWriter();
-		
+		PrintWriter out = resp.getWriter();
+		Key ukey = KeyFactory.createKey("User", email);
+		Date currdate = new Date();
 		try {
-			Key ukey = KeyFactory.createKey("User", email);
+			
 			datastore.get(ukey);
 			//TODO send proper response
+			
 			JSONObject obj = new JSONObject();
-			obj.put("success", false);
-			obj.put("key", KeyFactory.keyToString(ukey));
-			obj.put("user","");
-			out.println(obj);
+			obj.put(Strings.SUCCESS, false);
+			obj.put(Strings.MESSAGE, Strings.USER_EXISTS);
+			obj.put(Strings.USER,new JSONObject());
+			
+			out.print(obj);
+			
 			//datastore.get
 		} 
 		catch (JSONException e3){
 			e3.printStackTrace();
 		}
-		catch (Exception e) {
+		catch (Exception e) { // entity not found so add user
 			// add user
-			Entity user = new Entity("User",email); // email is the id of user
-			user.setProperty("fullName", name);
-			user.setProperty("hashedPassword", pwd);
-			user.setProperty("city", city);
-			user.setProperty("zipcode", zipcode);
-			user.setProperty("state", state);
-			user.setProperty("address",address);
-			user.setProperty("phone", phone);
-			Date currdate = new Date();
-			user.setProperty("registeredOn",currdate );
+			Transaction txn = datastore.beginTransaction();
+			try {
+				datastore.get(ukey); // object already exists
+				txn.rollback();
+				
+			} catch (EntityNotFoundException e2) { // now save the entity
+				
+				Entity user = new Entity("User",email); // email is the id of user
+				user.setProperty("fullName", name);
+				user.setProperty("hashedPassword", pwd);
+				user.setProperty("city", city);
+				user.setProperty("zipcode", zipcode);
+				user.setProperty("state", state);
+				user.setProperty("address",address);
+				user.setProperty("phone", phone);
+				user.setProperty("registeredOn",currdate );
 
-			if(userType.equals("donor")){
-				user.setProperty("isDonor", true);
-				user.setProperty("isVolunteer", false);
-			}else{ // its a volunteer
-				user.setProperty("isDonor", false);
-				user.setProperty("isVolunteer", true);
+				if(userType.equals("donor")){
+					user.setProperty("isDonor", true);
+					user.setProperty("isVolunteer", false);
+				}else{ // its a volunteer
+					user.setProperty("isDonor", false);
+					user.setProperty("isVolunteer", true);
+				}
+				datastore.put(user);
+				txn.commit();
+			} finally{
+				if(txn.isActive())
+					txn.rollback();
 			}
-			Key k = datastore.put(user);
+			
 			//TODO send proper response and delete print statement
 			
 			
 				JSONObject obj = new JSONObject();
 				try {
-					obj.put("success", true);
-					obj.put("key", KeyFactory.keyToString(k));
+					obj.put(Strings.SUCCESS, true);
+					obj.put(Strings.MESSAGE, Strings.SUCCESS);
 					
 					JSONObject usr = new JSONObject();
 					usr.put("fullName", name);
@@ -197,6 +237,7 @@ public class RegisterServlet extends HttpServlet {
 		}
 		
 	}
+	
 	/**
 	 * Escape an html string. Escaping data received from the client helps to
 	 * prevent cross-site script vulnerabilities.

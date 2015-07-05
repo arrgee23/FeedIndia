@@ -32,8 +32,25 @@
     <servlet-class>rahul.feedindia.VolunteerViewServlet</servlet-class>
   </servlet>
   
+  <servlet>  
+    <servlet-name>UnhandledRequestServlet</servlet-name>
+    <servlet-class>rahul.feedindia.UnhandledRequestServlet</servlet-class>
+  </servlet>
   
+  <servlet>  
+    <servlet-name>UnhandledDonationServlet</servlet-name>
+    <servlet-class>rahul.feedindia.UnhandledDonationServlet</servlet-class>
+  </servlet>
   
+  <servlet>  
+    <servlet-name>CheckoutRequestServlet</servlet-name>
+    <servlet-class>rahul.feedindia.CheckoutRequestServlet</servlet-class>
+  </servlet>
+  
+  <servlet>  
+    <servlet-name>CheckoutDonationServlet</servlet-name>
+    <servlet-class>rahul.feedindia.CheckoutDonationServlet</servlet-class>
+  </servlet>
   
   
   <servlet-mapping>
@@ -64,6 +81,26 @@
   <servlet-mapping>
     <servlet-name>VolunteerViewServlet</servlet-name>
     <url-pattern>/feedindia/volunteer</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>UnhandledRequestServlet</servlet-name>
+    <url-pattern>feedindia/unhandled_request</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>UnhandledDonationServlet</servlet-name>
+    <url-pattern>feedindia/unhandled_donation</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>CheckoutDonationServlet</servlet-name>
+    <url-pattern>feedindia/unchecked_donation</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>CheckoutRequestServlet</servlet-name>
+    <url-pattern>feedindia/unchecked_request</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

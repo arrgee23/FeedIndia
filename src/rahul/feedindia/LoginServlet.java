@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import rahul.feedindia.shared.Strings;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -21,7 +22,7 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = -5728549237300194024L;
-	private final int SESSION_TIMEOUT = 30;
+	private final int SESSION_TIMEOUT = 120; // seconds
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
@@ -65,10 +66,20 @@ public class LoginServlet extends HttpServlet {
 			}
 			else{ // wrong password
 				obj = encodeUserObject(datastore,false,user);
+				obj.put(Strings.MESSAGE, Strings.WRONG_PASSWORD);
 			}
 			
 		} catch (EntityNotFoundException e) { // user doesnt exist
 			obj = encodeUserObject(datastore,false,null);
+			try {
+				obj.put(Strings.MESSAGE, Strings.ENTITY_NOT_FOUND);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		out.print(obj);
 	}
@@ -115,10 +126,20 @@ public class LoginServlet extends HttpServlet {
 			}
 			else{ // wrong password
 				obj = encodeUserObject(datastore,false,user);
+				obj.put(Strings.MESSAGE, Strings.WRONG_PASSWORD);
 			}
 			
 		} catch (EntityNotFoundException e) { // user doesnt exist
 			obj = encodeUserObject(datastore,false,null);
+			try {
+				obj.put(Strings.MESSAGE, Strings.ENTITY_NOT_FOUND);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		out.print(obj);
 	}
@@ -130,7 +151,7 @@ public class LoginServlet extends HttpServlet {
 			// TODO error msg
 			if (isSuccesfulLogin) {
 
-				obj.put("success", true);
+				obj.put(Strings.SUCCESS, true);
 
 				JSONObject usr = new JSONObject();
 				usr.put("fullName", (String) user.getProperty("fullName"));
@@ -147,12 +168,12 @@ public class LoginServlet extends HttpServlet {
 				usr.put("state", (String) user.getProperty("state"));
 				usr.put("zipcode", (String) user.getProperty("zipcode"));
 
-				obj.put("user", usr);
+				obj.put(Strings.USER, usr);
 
 			} else {
-				obj.put("success", false);
+				obj.put(Strings.SUCCESS, false);
 				//obj.put("key", KeyFactory.keyToString(ukey));
-				obj.put("user", "");
+				obj.put(Strings.USER, new JSONObject());
 			}
 			//out.println(obj);
 
