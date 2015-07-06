@@ -22,6 +22,7 @@ public class Strings {
 	public final static String[] REQUEST_DATES = {"handledOn","requestedForDate","requestedOn","responsibilityTakenOn" };
 	public final static String[] REQUEST_BOOLEANS = {"isBeingHandled","isHandled","isOrganization"};
 	public final static String[] REQUEST_KEYS = {"handledBy"};
+	public final static String[] REQUEST_INTS = {"foodQuantity"};
 
 	// Donation entity
 	public final static String[] DONATION_STRINGS = {"foodType"};
@@ -36,10 +37,10 @@ public class Strings {
 	public final static String[] USER_BOOLEANS = {"isDonor","isVolunteer","isOrganization"};
 
 	// some urls to reference
-	public final static String UNHANDLED_REQUEST_URL = "http://localhost:8888/feedindia/unhandled_request";
-	public final static String UNCHECKED_REQUEST_URL = "http://localhost:8888/feedindia/unchecked_request";
-	public final static String UNHANDLED_DONATE_URL = "http://localhost:8888/feedindia/unhandled_donation";
-	public final static String UNCHECKED_DONATE_URL = "http://localhost:8888/feedindia/unchecked_donation";
+	public final static String UNHANDLED_REQUEST_URL = "http://feedindia-api/unhandledrequest";
+	public final static String UNCHECKED_REQUEST_URL = "http://feedindia-api/uncheckedrequest";
+	public final static String UNHANDLED_DONATE_URL = "http://feedindia-api/unhandleddonation";
+	public final static String UNCHECKED_DONATE_URL = "http://feedindia-api/uncheckeddonation";
 
 	// some message strings for error and success message
 	public final static String NOT_LOGGED_IN = "User not logged in";

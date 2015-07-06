@@ -55,52 +55,52 @@
   
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>
-    <url-pattern>/feedindia/register</url-pattern>
+    <url-pattern>/register</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>LoginServlet</servlet-name>
-    <url-pattern>/feedindia/login</url-pattern>
+    <url-pattern>/login</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>LogoutServlet</servlet-name>
-    <url-pattern>/feedindia/logout</url-pattern>
+    <url-pattern>/logout</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>DonateServlet</servlet-name>
-    <url-pattern>/feedindia/donate</url-pattern>
+    <url-pattern>/donate</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>RequestServlet</servlet-name>
-    <url-pattern>/feedindia/request</url-pattern>
+    <url-pattern>/request</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>VolunteerViewServlet</servlet-name>
-    <url-pattern>/feedindia/volunteer</url-pattern>
+    <url-pattern>/volunteer</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>UnhandledRequestServlet</servlet-name>
-    <url-pattern>feedindia/unhandled_request</url-pattern>
+    <url-pattern>/unhandledrequest</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>UnhandledDonationServlet</servlet-name>
-    <url-pattern>feedindia/unhandled_donation</url-pattern>
+    <url-pattern>/unhandleddonation</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>CheckoutDonationServlet</servlet-name>
-    <url-pattern>feedindia/unchecked_donation</url-pattern>
+    <url-pattern>/uncheckeddonation</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>CheckoutRequestServlet</servlet-name>
-    <url-pattern>feedindia/unchecked_request</url-pattern>
+    <url-pattern>/uncheckedrequest</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->

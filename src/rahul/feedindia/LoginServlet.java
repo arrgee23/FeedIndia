@@ -22,7 +22,7 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = -5728549237300194024L;
-	private final int SESSION_TIMEOUT = 120; // seconds
+	private final int SESSION_TIMEOUT = 300; // seconds
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
@@ -83,7 +83,6 @@ public class LoginServlet extends HttpServlet {
 		}
 		out.print(obj);
 	}
-	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		String email = checkNull(escapeHtml(req.getParameter("email")));

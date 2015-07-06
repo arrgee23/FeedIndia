@@ -10,6 +10,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import rahul.feedindia.shared.Strings;
 
@@ -26,6 +27,8 @@ import com.google.appengine.labs.repackaged.org.json.JSONObject;
 //TODO delete throwsIOException
 public class RegisterServlet extends HttpServlet {
 	private static final long serialVersionUID = 4527085618846172530L;
+	private static final int SESSION_TIMEOUT = 300;
+	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException{
 		resp.setContentType("application/json");
 		
@@ -88,7 +91,15 @@ public class RegisterServlet extends HttpServlet {
 					user.setProperty("isDonor", false);
 					user.setProperty("isVolunteer", true);
 				}
-				datastore.put(user);
+				Key userKey = datastore.put(user);
+				// save the key in session object
+				
+				// Create a session object if it is already not created.
+				HttpSession session = req.getSession(true);
+				// put key in session
+				session.setAttribute("key", ukey);
+				session.setMaxInactiveInterval(SESSION_TIMEOUT); // set timeout
+				
 				txn.commit();
 			} finally{
 				if(txn.isActive())

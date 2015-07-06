@@ -37,6 +37,7 @@ public class RequestServlet extends HttpServlet {
 		String address = FieldVerifier.checkNull(FieldVerifier.escapeHtml(req.getParameter("address")));
 		String phone = FieldVerifier.checkNull(FieldVerifier.escapeHtml(req.getParameter("phone")));
 		String requesterType = FieldVerifier.checkNull(FieldVerifier.escapeHtml((req.getParameter("userType"))));
+		
 		Date requestedOn = new Date();
 		Date requestedForDate = null;
 		Key volunteer = null; // the volunteer who will collect the donation
