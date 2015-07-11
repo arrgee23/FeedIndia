@@ -1,2 +1,3 @@
 # Module feedindia
 # RPC service class, partial path of RPC policy file
+rahul.feedindia.client.GreetingService, DB755215FDFDE3E0B640EF65F838DEE9.gwt.rpc

@@ -87,10 +87,14 @@ public class RegisterServlet extends HttpServlet {
 				if(userType.equals("donor")){
 					user.setProperty("isDonor", true);
 					user.setProperty("isVolunteer", false);
-				}else{ // its a volunteer
+				}else if(userType.equals("volunteer")){ // its a volunteer
 					user.setProperty("isDonor", false);
 					user.setProperty("isVolunteer", true);
+				}else{
+					user.setProperty("isDonor", true);
+					user.setProperty("isVolunteer", true);
 				}
+				
 				Key userKey = datastore.put(user);
 				// save the key in session object
 				
@@ -98,7 +102,7 @@ public class RegisterServlet extends HttpServlet {
 				HttpSession session = req.getSession(true);
 				// put key in session
 				session.setAttribute("key", ukey);
-				session.setMaxInactiveInterval(SESSION_TIMEOUT); // set timeout
+				//session.setMaxInactiveInterval(SESSION_TIMEOUT); // set timeout
 				
 				txn.commit();
 			} finally{

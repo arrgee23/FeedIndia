@@ -62,7 +62,7 @@ public class LoginServlet extends HttpServlet {
 				
 				// put key in session
 				session.setAttribute("key", ukey);
-				session.setMaxInactiveInterval(SESSION_TIMEOUT); // set timeout
+				//session.setMaxInactiveInterval(SESSION_TIMEOUT); // set timeout
 			}
 			else{ // wrong password
 				obj = encodeUserObject(datastore,false,user);
