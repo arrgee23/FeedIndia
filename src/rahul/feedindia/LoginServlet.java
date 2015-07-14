@@ -83,6 +83,7 @@ public class LoginServlet extends HttpServlet {
 		}
 		out.print(obj);
 	}
+	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
 		String email = checkNull(escapeHtml(req.getParameter("email")));

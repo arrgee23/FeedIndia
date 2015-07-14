@@ -205,11 +205,23 @@ public class RegisterServlet extends HttpServlet {
 				if(userType.equals("donor")){
 					user.setProperty("isDonor", true);
 					user.setProperty("isVolunteer", false);
-				}else{ // its a volunteer
+				}else if(userType.equals("volunteer")){ // its a volunteer
 					user.setProperty("isDonor", false);
 					user.setProperty("isVolunteer", true);
+				}else{
+					user.setProperty("isDonor", true);
+					user.setProperty("isVolunteer", true);
 				}
-				datastore.put(user);
+				
+				Key userKey = datastore.put(user);
+				// save the key in session object
+				
+				// Create a session object if it is already not created.
+				HttpSession session = req.getSession(true);
+				// put key in session
+				session.setAttribute("key", ukey);
+				//session.setMaxInactiveInterval(SESSION_TIMEOUT); // set timeout
+				
 				txn.commit();
 			} finally{
 				if(txn.isActive())
@@ -252,6 +264,7 @@ public class RegisterServlet extends HttpServlet {
 		}
 		
 	}
+	
 	
 	/**
 	 * Escape an html string. Escaping data received from the client helps to

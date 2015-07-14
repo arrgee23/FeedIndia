@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import rahul.feedindia.shared.Strings;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
@@ -77,7 +79,9 @@ public class DonateServlet extends HttpServlet {
 			donation.setProperty("handledOn",handledOn);
 			datastore.put(donation);
 			try {
-				obj.put("success",true);
+				
+				obj.put(Strings.SUCCESS,true);
+				obj.put(Strings.MESSAGE, Strings.SUCCESS);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -87,6 +91,7 @@ public class DonateServlet extends HttpServlet {
 			try {
 				// TODO error msg
 				obj.put("success", false);
+				obj.put(Strings.MESSAGE, Strings.NOT_LOGGED_IN);
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -118,8 +123,21 @@ public class DonateServlet extends HttpServlet {
 			Entity donation = new Entity("Donation");
 			// type of donation argument
 			String foodType = checkNull(escapeHtml(req.getParameter("foodType")));
-			int foodQuantity = Integer.parseInt(checkNull(escapeHtml(req.getParameter("foodQuantity"))));
-			int money = Integer.parseInt(checkNull(escapeHtml(req.getParameter("money"))));
+			
+			String  qty = checkNull(escapeHtml(req.getParameter("foodQuantity")));
+			int foodQuantity;
+			if(qty.equals(""))
+				foodQuantity = 0;
+			else
+				foodQuantity = Integer.parseInt(qty);
+			
+			int money;
+			String m = checkNull(escapeHtml(req.getParameter("money")));
+			if(m.equals(""))
+				money = 0;
+			else
+				money = Integer.parseInt(m);
+			
 			donation.setProperty("foodType",foodType );
 			donation.setProperty("foodQuantity",foodQuantity);
 			donation.setProperty("money",money);
@@ -140,7 +158,9 @@ public class DonateServlet extends HttpServlet {
 			donation.setProperty("handledOn",handledOn);
 			datastore.put(donation);
 			try {
-				obj.put("success",true);
+				
+				obj.put(Strings.SUCCESS,true);
+				obj.put(Strings.MESSAGE, Strings.SUCCESS);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -150,6 +170,7 @@ public class DonateServlet extends HttpServlet {
 			try {
 				// TODO error msg
 				obj.put("success", false);
+				obj.put(Strings.MESSAGE, Strings.NOT_LOGGED_IN);
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
